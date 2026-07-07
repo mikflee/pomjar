@@ -21,6 +21,7 @@ function App() {
   const [poms, setPoms] = useLocalStorage("pomjar_poms", []);
   const [reward, setReward] = useLocalStorage("pomjar_reward", "");
   const [shelf, setShelf] = useLocalStorage("pomjar_shelf", []);
+  const [goal, setGoal] = useLocalStorage("pomjar_goal", GOAL);
 
   const [landingPomId, setLandingPomId] = useState(null);
   const [celebration, setCelebration] = useState(null);
@@ -30,7 +31,7 @@ function App() {
   // Reaching the goal: glow + woodland parade, then the reward card.
   // The jar is NOT auto-emptied — the user chooses when to shelve it.
   useEffect(() => {
-    if (poms.length >= GOAL && !jarFull) {
+    if (poms.length >= goal && !jarFull) {
       setJarFull(true);
       setCheer({ id: uid(), mode: "parade" });
       const t = setTimeout(
@@ -60,7 +61,7 @@ function App() {
 
   const completeTask = (task) => {
     setTasks((t) => t.filter((x) => x.id !== task.id));
-    if (poms.length >= GOAL) return; // jar is full, awaiting shelving
+    if (poms.length >= goal) return; // jar is full, awaiting shelving
     const pomId = uid();
     setPoms((p) => [...p, { id: pomId, category: task.category }]);
     // Land on top of the pile first, then settle into the correct stratum.
@@ -116,6 +117,9 @@ function App() {
 
   const notYet = () => setCelebration(null);
 
+  const deleteShelfJar = (id) =>
+    setShelf((s) => s.filter((x) => x.id !== id));
+
   return (
     <div className="pj-bg">
       <div className="pj-content mx-auto max-w-6xl px-5 py-10 md:py-14">
@@ -136,7 +140,7 @@ function App() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 lg:gap-14 items-start">
           {/* Jar side */}
           <section className="md:col-span-5 flex flex-col items-center">
-            <Jar poms={poms} landingPomId={landingPomId} glow={jarFull} />
+            <Jar poms={poms} landingPomId={landingPomId} glow={jarFull} goal={goal} />
 
             {jarFull && !celebration && (
               <button
@@ -161,7 +165,22 @@ function App() {
                 className="text-center bg-transparent border-b border-white/25 text-white/90 text-xl font-serif-cozy py-2 w-full focus:border-white/60 outline-none placeholder:text-white/30 transition-colors"
               />
             </div>
-            <Shelf jars={shelf} />
+
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <label className="pj-label text-white/50">Jar goal</label>
+              <input
+                type="number"
+                min="1"
+                data-testid="goal-input"
+                value={goal}
+                onChange={(e) => {
+                  const v = parseInt(e.target.value, 10);
+                  if (!isNaN(v) && v > 0) setGoal(v);
+                }}
+                className="w-20 text-center bg-transparent border-b border-white/25 text-white/90 py-1 focus:border-white/60 outline-none"
+              />
+              <span className="text-white/40 text-sm">poms</span>
+            </div>
           </section>
 
           {/* Panels side */}
@@ -194,6 +213,10 @@ function App() {
             onAddToToday={addToToday}
             onDelete={deleteDrawer}
           />
+        </div>
+
+        <div className="mt-8">
+          <Shelf jars={shelf} onDelete={deleteShelfJar} />
         </div>
       </div>
 

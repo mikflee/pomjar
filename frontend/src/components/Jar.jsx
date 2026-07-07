@@ -1,19 +1,37 @@
 import { motion } from "framer-motion";
-import { CATEGORIES, CATEGORY_ORDER, GOAL } from "../lib/store";
+import { CATEGORIES, CATEGORY_ORDER } from "../lib/store";
 
-// Gravity row-fill jar sized so exactly GOAL (100) poms fill it — a 10x10 grid.
-// Poms pack bottom-up, left-to-right, filling each row before the next. Ordered
-// by category with the greatest at the bottom => full rows of one color.
-const PERROW = 10;
-const POM = 28;
-const STEP_X = 28;
-const STEP_Y = 33;
-const OFF_X = 4;
-const OFF_Y = 8;
+// The jar body is a fixed size; the pom grid is computed from the goal so the
+// jar fills completely at the goal, at any goal, with clearly visible poms.
 const JAR_W = 288;
 const JAR_H = 340;
+const USABLE_W = 280;
+const USABLE_H = 322;
+const OFF_X = (JAR_W - USABLE_W) / 2;
+const OFF_Y = 8;
 
-export const Jar = ({ poms, landingPomId, glow }) => {
+const computeGrid = (n) => {
+  const N = Math.max(1, n);
+  let best = null;
+  const maxC = Math.min(N, 30);
+  for (let c = 1; c <= maxC; c++) {
+    const r = Math.ceil(N / c);
+    const stepX = USABLE_W / c;
+    const stepY = USABLE_H / r;
+    const cell = Math.min(stepX, stepY);
+    const waste = c * r - N;
+    const squareness = Math.min(stepX, stepY) / Math.max(stepX, stepY);
+    const score = cell * squareness - waste * 0.6;
+    if (!best || score > best.score) best = { c, r, stepX, stepY, score };
+  }
+  const pom = Math.max(5, Math.floor(Math.min(best.stepX, best.stepY)) - 2);
+  return { perRow: best.c, stepX: best.stepX, stepY: best.stepY, pom };
+};
+
+export const Jar = ({ poms, landingPomId, glow, goal }) => {
+  const capacity = Math.max(goal, poms.length, 1);
+  const { perRow, stepX, stepY, pom } = computeGrid(capacity);
+
   const counts = {};
   CATEGORY_ORDER.forEach((c) => (counts[c] = 0));
   poms.forEach((p) => (counts[p.category] += 1));
@@ -29,12 +47,16 @@ export const Jar = ({ poms, landingPomId, glow }) => {
     poms.filter((p) => p.category === cat).forEach((p) => ordered.push(p)),
   );
 
-  const placed = ordered.map((p, i) => ({
-    id: p.id,
-    category: p.category,
-    x: OFF_X + (i % PERROW) * STEP_X,
-    y: -(OFF_Y + Math.floor(i / PERROW) * STEP_Y),
-  }));
+  const placed = ordered.map((p, i) => {
+    const col = i % perRow;
+    const row = Math.floor(i / perRow);
+    return {
+      id: p.id,
+      category: p.category,
+      x: OFF_X + col * stepX + (stepX - pom) / 2,
+      y: -(OFF_Y + row * stepY + (stepY - pom) / 2),
+    };
+  });
 
   return (
     <div className="flex flex-col items-center" data-testid="jar-wrapper">
@@ -80,8 +102,8 @@ export const Jar = ({ poms, landingPomId, glow }) => {
                 position: "absolute",
                 left: 0,
                 bottom: 0,
-                width: POM,
-                height: POM,
+                width: pom,
+                height: pom,
                 background: CATEGORIES[p.category].gradient,
                 boxShadow:
                   "0 2px 4px rgba(0,0,0,0.4), inset 0 2px 3px rgba(255,255,255,0.45), inset 0 -3px 5px rgba(0,0,0,0.25)",
@@ -95,7 +117,7 @@ export const Jar = ({ poms, landingPomId, glow }) => {
         className="mt-6 font-serif-cozy text-3xl text-white"
       >
         {poms.length}{" "}
-        <span className="text-white/50 text-2xl">/ {GOAL} poms</span>
+        <span className="text-white/50 text-2xl">/ {goal} poms</span>
       </p>
     </div>
   );

@@ -9,7 +9,7 @@ export const Celebration = ({ data, onPlaceOnShelf, onNotYet }) => (
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-50 flex items-center justify-center p-6"
-        style={{ background: "rgba(0,0,0,0.55)" }}
+        style={{ background: "rgba(0,0,0,0.2)" }}
       >
         <motion.div
           initial={{ scale: 0.9, opacity: 0, y: 12 }}
