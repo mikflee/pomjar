@@ -99,9 +99,9 @@ function App() {
           </h1>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 lg:gap-14 items-start">
           {/* Jar side */}
-          <section className="lg:col-span-5 flex flex-col items-center">
+          <section className="md:col-span-5 flex flex-col items-center">
             <Jar poms={poms} lastPomId={lastPomId} glow={glow} />
             <div className="mt-8 w-full max-w-xs">
               <label className="pj-label text-white/50 block text-center mb-2">
@@ -119,7 +119,7 @@ function App() {
           </section>
 
           {/* Panels side */}
-          <section className="lg:col-span-7 space-y-8">
+          <section className="md:col-span-7 space-y-8">
             <div className="pj-panel">
               <h2 className="font-serif-cozy text-2xl text-[#3F332D] mb-4">
                 Add a task
