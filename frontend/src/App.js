@@ -5,6 +5,7 @@ import {
   DEFAULT_DRAWER,
   useLocalStorage,
   uid,
+  countByCategory,
 } from "@/lib/store";
 import { Jar } from "@/components/Jar";
 import { AddTaskForm } from "@/components/AddTaskForm";
@@ -12,6 +13,7 @@ import { TodayList } from "@/components/TodayList";
 import { TaskDrawer } from "@/components/TaskDrawer";
 import { Celebration } from "@/components/Celebration";
 import { Shelf } from "@/components/Shelf";
+import { WoodlandCheer } from "@/components/WoodlandCheer";
 
 function App() {
   const [tasks, setTasks] = useLocalStorage("pomjar_tasks", []);
@@ -22,22 +24,30 @@ function App() {
 
   const [lastPomId, setLastPomId] = useState(null);
   const [celebration, setCelebration] = useState(null);
-  const [glow, setGlow] = useState(false);
+  const [jarFull, setJarFull] = useState(false);
+  const [cheer, setCheer] = useState(null);
 
+  // Reaching the goal: glow + woodland parade, then the reward card.
+  // The jar is NOT auto-emptied — the user chooses when to shelve it.
   useEffect(() => {
-    if (poms.length >= GOAL && !celebration) {
-      setGlow(true);
-      const captured = reward;
-      const t = setTimeout(() => {
-        setShelf((s) => [...s, { id: uid(), reward: captured, date: Date.now() }]);
-        setCelebration({ reward: captured });
-        setPoms([]);
-        setReward("");
-        setLastPomId(null);
-      }, 900);
+    if (poms.length >= GOAL && !jarFull) {
+      setJarFull(true);
+      setCheer({ id: uid(), mode: "parade" });
+      const t = setTimeout(
+        () => setCelebration({ reward }),
+        1600,
+      );
       return () => clearTimeout(t);
     }
   }, [poms.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-clear a running cheer.
+  useEffect(() => {
+    if (!cheer) return;
+    const dur = cheer.mode === "parade" ? 9000 : 5500;
+    const t = setTimeout(() => setCheer(null), dur);
+    return () => clearTimeout(t);
+  }, [cheer]);
 
   const addTask = ({ title, category, destination }) => {
     if (destination === "today" || destination === "both") {
@@ -49,10 +59,12 @@ function App() {
   };
 
   const completeTask = (task) => {
+    setTasks((t) => t.filter((x) => x.id !== task.id));
+    if (poms.length >= GOAL) return; // jar is full, awaiting shelving
     const pomId = uid();
     setLastPomId(pomId);
     setPoms((p) => [...p, { id: pomId, category: task.category }]);
-    setTasks((t) => t.filter((x) => x.id !== task.id));
+    if (Math.random() < 0.18) setCheer({ id: uid(), mode: "single" });
   };
 
   const deleteTask = (id) => setTasks((t) => t.filter((x) => x.id !== id));
@@ -69,22 +81,35 @@ function App() {
 
   const saveToDrawer = (task) => {
     setDrawer((d) =>
-      dupe(d, task) ? d : [...d, { id: uid(), title: task.title, category: task.category }],
+      dupe(d, task)
+        ? d
+        : [...d, { id: uid(), title: task.title, category: task.category }],
     );
   };
 
   const addToToday = (task) => {
     setTasks((t) =>
-      dupe(t, task) ? t : [...t, { id: uid(), title: task.title, category: task.category }],
+      dupe(t, task)
+        ? t
+        : [...t, { id: uid(), title: task.title, category: task.category }],
     );
   };
 
   const deleteDrawer = (id) => setDrawer((d) => d.filter((x) => x.id !== id));
 
-  const closeCelebration = () => {
+  const placeOnShelf = () => {
+    setShelf((s) => [
+      ...s,
+      { id: uid(), reward, date: Date.now(), counts: countByCategory(poms) },
+    ]);
+    setPoms([]);
+    setReward("");
+    setLastPomId(null);
+    setJarFull(false);
     setCelebration(null);
-    setGlow(false);
   };
+
+  const notYet = () => setCelebration(null);
 
   return (
     <div className="pj-bg">
@@ -94,9 +119,8 @@ function App() {
             data-testid="app-title"
             className="font-serif-cozy text-6xl sm:text-7xl md:text-8xl text-white"
             style={{
-              fontWeight: 600,
-              letterSpacing: "-0.01em",
-              fontVariationSettings: '"opsz" 144, "SOFT" 0, "WONK" 0',
+              fontWeight: 700,
+              letterSpacing: "-0.02em",
               textShadow: "0 2px 24px rgba(217,119,6,0.35)",
             }}
           >
@@ -107,7 +131,19 @@ function App() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 lg:gap-14 items-start">
           {/* Jar side */}
           <section className="md:col-span-5 flex flex-col items-center">
-            <Jar poms={poms} lastPomId={lastPomId} glow={glow} />
+            <Jar poms={poms} lastPomId={lastPomId} glow={jarFull} />
+
+            {jarFull && !celebration && (
+              <button
+                type="button"
+                data-testid="shelf-jar-cta"
+                onClick={() => setCelebration({ reward })}
+                className="mt-5 rounded-full border border-white/25 bg-white/5 px-5 py-2 text-sm text-white/85 hover:bg-white/10 transition-colors"
+              >
+                Place this jar on the shelf
+              </button>
+            )}
+
             <div className="mt-8 w-full max-w-xs">
               <label className="pj-label text-white/50 block text-center mb-2">
                 Your Reward
@@ -144,7 +180,6 @@ function App() {
                 onSaveToDrawer={saveToDrawer}
               />
             </div>
-
           </section>
         </div>
 
@@ -157,7 +192,12 @@ function App() {
         </div>
       </div>
 
-      <Celebration data={celebration} onClose={closeCelebration} />
+      <WoodlandCheer cheer={cheer} />
+      <Celebration
+        data={celebration}
+        onPlaceOnShelf={placeOnShelf}
+        onNotYet={notYet}
+      />
     </div>
   );
 }

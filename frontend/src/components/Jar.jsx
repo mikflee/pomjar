@@ -8,9 +8,10 @@ export const Jar = ({ poms, lastPomId, glow }) => {
   CATEGORY_ORDER.forEach((c) => (counts[c] = 0));
   poms.forEach((p) => (counts[p.category] += 1));
 
+  // Least-represented category first (renders at top), greatest last (bottom).
   const layerOrder = [...CATEGORY_ORDER].sort(
     (a, b) =>
-      counts[b] - counts[a] ||
+      counts[a] - counts[b] ||
       CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b),
   );
 
@@ -48,14 +49,15 @@ export const Jar = ({ poms, lastPomId, glow }) => {
       >
         {/* left glass highlight */}
         <div
-          className="pointer-events-none absolute left-2 top-3 bottom-6 w-1 rounded-full"
+          className="pointer-events-none absolute left-2 top-3 bottom-6 w-1 rounded-full z-10"
           style={{ background: "rgba(255,255,255,0.35)" }}
         />
         <div
           className="absolute inset-0 flex p-3"
           style={{
-            flexWrap: "wrap-reverse",
-            alignContent: "flex-start",
+            flexWrap: "wrap",
+            alignItems: "flex-end",
+            alignContent: "flex-end",
             justifyContent: "center",
             gap: "3px",
           }}
@@ -65,11 +67,11 @@ export const Jar = ({ poms, lastPomId, glow }) => {
             return (
               <motion.span
                 key={p.id}
-                initial={isNew ? { y: -46, opacity: 0 } : false}
+                initial={isNew ? { y: -320, opacity: 0 } : false}
                 animate={{ y: 0, opacity: 1 }}
                 transition={
                   isNew
-                    ? { type: "spring", stiffness: 180, damping: 14, mass: 0.8 }
+                    ? { type: "spring", stiffness: 140, damping: 13, mass: 0.9 }
                     : { duration: 0 }
                 }
                 className="rounded-full"

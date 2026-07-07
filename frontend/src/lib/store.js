@@ -47,6 +47,21 @@ export const DEFAULT_DRAWER = [
   ]),
 ];
 
+export const ANIMALS = ["🐻", "🦊", "🦦", "🐰", "🐸", "🐿️", "🦉", "🦌"];
+
+export const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+export const countByCategory = (poms) => {
+  const c = { joy: 0, consistency: 0, momentum: 0 };
+  poms.forEach((p) => {
+    c[p.category] += 1;
+  });
+  return c;
+};
+
+export const monthYear = (ts) =>
+  new Date(ts).toLocaleString("en-US", { month: "short", year: "numeric" });
+
 export function useLocalStorage(key, initial) {
   const [value, setValue] = useState(() => {
     try {
