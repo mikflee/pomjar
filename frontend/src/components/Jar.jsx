@@ -117,7 +117,7 @@ export const Jar = ({ poms, landingPomId, glow, goal }) => {
         className="mt-6 font-serif-cozy text-3xl text-white"
       >
         {poms.length}{" "}
-        <span className="text-white/50 text-2xl">/ {goal} poms</span>
+        <span className="text-white/50 text-2xl">/ {goal} pom poms</span>
       </p>
     </div>
   );

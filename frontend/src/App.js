@@ -167,7 +167,7 @@ function App() {
             </div>
 
             <div className="mt-6 flex items-center justify-center gap-3">
-              <label className="pj-label text-white/50">Jar goal</label>
+              <label className="pj-label text-white/50">Goal</label>
               <input
                 type="number"
                 min="1"
@@ -179,16 +179,13 @@ function App() {
                 }}
                 className="w-20 text-center bg-transparent border-b border-white/25 text-white/90 py-1 focus:border-white/60 outline-none"
               />
-              <span className="text-white/40 text-sm">poms</span>
+              <span className="text-white/40 text-sm">pom poms</span>
             </div>
           </section>
 
           {/* Panels side */}
           <section className="md:col-span-7 space-y-8">
             <div className="pj-panel">
-              <h2 className="font-serif-cozy text-2xl text-[#3F332D] mb-4">
-                Add a task
-              </h2>
               <AddTaskForm onAdd={addTask} />
             </div>
 

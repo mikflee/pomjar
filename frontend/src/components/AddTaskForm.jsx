@@ -21,13 +21,23 @@ export const AddTaskForm = ({ onAdd }) => {
 
   return (
     <form onSubmit={submit} data-testid="add-task-form" className="space-y-4">
-      <input
-        data-testid="task-name-input"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Add a task"
-        className="w-full bg-transparent border-b-2 border-[#EAE3D5] focus:border-[#3F332D] outline-none py-2 text-lg text-[#3F332D] placeholder:text-[#8A7E78] transition-colors"
-      />
+      <div className="flex items-center gap-3">
+        <input
+          data-testid="task-name-input"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Add a task"
+          className="flex-1 bg-transparent border-b-2 border-[#EAE3D5] focus:border-[#3F332D] outline-none py-2 text-lg text-[#3F332D] placeholder:text-[#8A7E78] transition-colors"
+        />
+        <button
+          type="submit"
+          data-testid="add-task-button"
+          aria-label="Add task"
+          className="flex items-center justify-center shrink-0 h-11 w-11 bg-[#3F332D] text-[#FDFBF7] hover:bg-[#2a221d] rounded-lg font-medium transition-all active:scale-95"
+        >
+          <Plus size={22} />
+        </button>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="pj-label text-[#8A7E78]">Category</label>
@@ -61,13 +71,6 @@ export const AddTaskForm = ({ onAdd }) => {
           </select>
         </div>
       </div>
-      <button
-        type="submit"
-        data-testid="add-task-button"
-        className="flex items-center justify-center gap-2 w-full bg-[#3F332D] text-[#FDFBF7] hover:bg-[#2a221d] rounded-lg px-4 py-2.5 font-medium transition-all active:scale-[0.98]"
-      >
-        <Plus size={18} /> Add task
-      </button>
     </form>
   );
 };

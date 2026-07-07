@@ -53,7 +53,7 @@ export const Shelf = ({ jars, onDelete }) => {
         <span className="flex items-center gap-3">
           <span className="pj-handle" />
           <span className="font-serif-cozy text-2xl text-[#3F332D]">
-            Your Shelf
+            Jar Shelf
           </span>
           <span className="text-[#8A7E78] text-sm">· {jars.length}</span>
         </span>
@@ -99,7 +99,7 @@ export const Shelf = ({ jars, onDelete }) => {
                         data-testid={`shelf-delete-${jar.id}`}
                         title="Delete jar"
                         onClick={() => onDelete(jar.id)}
-                        className="text-[#8A7E78] hover:text-[#BE123C] p-1 rounded-md hover:bg-[#EAE3D5] transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                        className="text-[#8A7E78] hover:text-[#BE123C] p-1 rounded-md hover:bg-[#EAE3D5] transition-colors"
                       >
                         <Trash2 size={15} />
                       </button>
