@@ -47,7 +47,7 @@ export const DEFAULT_DRAWER = [
   ]),
 ];
 
-export const ANIMALS = ["🦊", "🐇", "🦌", "🐿️", "🐈", "🐺", "🦔", "🐕"];
+export const ANIMALS = ["🦊", "🦌", "🐿️", "🦫", "🦔", "🐇", "🦡", "🦨"];
 
 export const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 

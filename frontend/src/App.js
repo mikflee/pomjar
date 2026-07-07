@@ -67,7 +67,7 @@ function App() {
     setLandingPomId(pomId);
     setTimeout(
       () => setLandingPomId((cur) => (cur === pomId ? null : cur)),
-      1150,
+      1700,
     );
     if (Math.random() < 0.18) setCheer({ id: uid(), mode: "single" });
   };
