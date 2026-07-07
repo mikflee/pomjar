@@ -1,44 +1,40 @@
 import { motion } from "framer-motion";
 import { CATEGORIES, CATEGORY_ORDER, GOAL } from "../lib/store";
 
-// Fixed-grid jar: every pom is permanently assigned a column, so poms only
-// ever move vertically (never horizontally). Columns are sorted by category
-// with the greatest global category at the bottom -> stratified bands.
+// Gravity row-fill jar: poms pack bottom-up, left-to-right, filling each row
+// completely before the next row starts. Poms are ordered by category with the
+// greatest category at the bottom, so rows are full of one color (red, then
+// green, then yellow) with only the boundary row mixed. Existing poms never
+// disappear — they smoothly roll to their slot as the pile rearranges.
 const PERROW = 9;
 const POM = 26;
 const STEP = 29; // pom + gap
 const OFF_X = 15;
 const OFF_Y = 12;
 
-const yFor = (row) => -(OFF_Y + row * STEP);
-
 export const Jar = ({ poms, landingPomId, glow }) => {
   const counts = {};
   CATEGORY_ORDER.forEach((c) => (counts[c] = 0));
   poms.forEach((p) => (counts[p.category] += 1));
 
-  // Greatest global count first -> sits at the bottom of every column.
+  // Greatest global count first -> fills the bottom rows.
   const globalOrder = [...CATEGORY_ORDER].sort(
     (a, b) =>
       counts[b] - counts[a] ||
       CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b),
   );
 
-  // Bucket poms into permanent columns by insertion order.
-  const cols = Array.from({ length: PERROW }, () => []);
-  poms.forEach((p, i) => cols[i % PERROW].push(p));
+  const ordered = [];
+  globalOrder.forEach((cat) =>
+    poms.filter((p) => p.category === cat).forEach((p) => ordered.push(p)),
+  );
 
-  const placed = [];
-  cols.forEach((colPoms, col) => {
-    const sorted = [...colPoms].sort(
-      (a, b) =>
-        globalOrder.indexOf(a.category) - globalOrder.indexOf(b.category),
-    );
-    const topRow = sorted.length - 1;
-    sorted.forEach((p, row) => {
-      placed.push({ ...p, col, row, topRow });
-    });
-  });
+  const placed = ordered.map((p, i) => ({
+    id: p.id,
+    category: p.category,
+    x: OFF_X + (i % PERROW) * STEP,
+    y: -(OFF_Y + Math.floor(i / PERROW) * STEP),
+  }));
 
   return (
     <div className="flex flex-col items-center" data-testid="jar-wrapper">
@@ -66,29 +62,27 @@ export const Jar = ({ poms, landingPomId, glow }) => {
         />
         {placed.map((p) => {
           const isLanding = p.id === landingPomId;
-          const finalY = yFor(p.row);
-          const topY = yFor(p.topRow);
           return (
             <motion.span
               key={p.id}
-              initial={isLanding ? { opacity: 0 } : false}
-              animate={
+              initial={
                 isLanding
-                  ? { y: [-372, topY, finalY], opacity: [0, 1, 1] }
-                  : { y: finalY, opacity: 1 }
+                  ? { x: p.x, y: -372, opacity: 0 }
+                  : false
               }
+              animate={{ x: p.x, y: p.y, opacity: 1 }}
               transition={
                 isLanding
                   ? {
-                      y: { duration: 1.5, times: [0, 0.5, 1], ease: "easeInOut" },
-                      opacity: { duration: 0.3 },
+                      y: { type: "spring", stiffness: 110, damping: 14, mass: 1 },
+                      opacity: { duration: 0.25 },
                     }
-                  : { y: { type: "spring", stiffness: 220, damping: 26, delay: 0.55 } }
+                  : { type: "spring", stiffness: 240, damping: 30 }
               }
               className="rounded-full"
               style={{
                 position: "absolute",
-                left: OFF_X + p.col * STEP,
+                left: 0,
                 bottom: 0,
                 width: POM,
                 height: POM,
