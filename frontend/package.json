@@ -1,5 +1,6 @@
 {
   "name": "frontend",
+  "homepage": "https://mikfleemikflee.github.io/pomjar",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
