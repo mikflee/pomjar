@@ -1,23 +1,23 @@
 import { motion } from "framer-motion";
 import { CATEGORIES, CATEGORY_ORDER, GOAL } from "../lib/store";
 
-// Gravity row-fill jar: poms pack bottom-up, left-to-right, filling each row
-// completely before the next row starts. Poms are ordered by category with the
-// greatest category at the bottom, so rows are full of one color (red, then
-// green, then yellow) with only the boundary row mixed. Existing poms never
-// disappear — they smoothly roll to their slot as the pile rearranges.
-const PERROW = 9;
-const POM = 26;
-const STEP = 29; // pom + gap
-const OFF_X = 15;
-const OFF_Y = 12;
+// Gravity row-fill jar sized so exactly GOAL (100) poms fill it — a 10x10 grid.
+// Poms pack bottom-up, left-to-right, filling each row before the next. Ordered
+// by category with the greatest at the bottom => full rows of one color.
+const PERROW = 10;
+const POM = 28;
+const STEP_X = 28;
+const STEP_Y = 33;
+const OFF_X = 4;
+const OFF_Y = 8;
+const JAR_W = 288;
+const JAR_H = 340;
 
 export const Jar = ({ poms, landingPomId, glow }) => {
   const counts = {};
   CATEGORY_ORDER.forEach((c) => (counts[c] = 0));
   poms.forEach((p) => (counts[p.category] += 1));
 
-  // Greatest global count first -> fills the bottom rows.
   const globalOrder = [...CATEGORY_ORDER].sort(
     (a, b) =>
       counts[b] - counts[a] ||
@@ -32,8 +32,8 @@ export const Jar = ({ poms, landingPomId, glow }) => {
   const placed = ordered.map((p, i) => ({
     id: p.id,
     category: p.category,
-    x: OFF_X + (i % PERROW) * STEP,
-    y: -(OFF_Y + Math.floor(i / PERROW) * STEP),
+    x: OFF_X + (i % PERROW) * STEP_X,
+    y: -(OFF_Y + Math.floor(i / PERROW) * STEP_Y),
   }));
 
   return (
@@ -48,13 +48,13 @@ export const Jar = ({ poms, landingPomId, glow }) => {
         }}
       />
       <div
-        className="h-4 w-48 pj-jar"
+        className="h-4 w-52 pj-jar"
         style={{ borderRadius: "6px 6px 0 0", borderBottom: "none" }}
       />
       <div
         data-testid="jar-body"
         className={`pj-jar relative overflow-hidden ${glow ? "pj-jar-glow" : ""}`}
-        style={{ width: 288, height: 384, borderRadius: "8px 8px 34px 34px" }}
+        style={{ width: JAR_W, height: JAR_H, borderRadius: "8px 8px 30px 30px" }}
       >
         <div
           className="pointer-events-none absolute left-2 top-3 bottom-6 w-1 rounded-full z-10"
@@ -65,11 +65,7 @@ export const Jar = ({ poms, landingPomId, glow }) => {
           return (
             <motion.span
               key={p.id}
-              initial={
-                isLanding
-                  ? { x: p.x, y: -372, opacity: 0 }
-                  : false
-              }
+              initial={isLanding ? { x: p.x, y: -(JAR_H + 24), opacity: 0 } : false}
               animate={{ x: p.x, y: p.y, opacity: 1 }}
               transition={
                 isLanding

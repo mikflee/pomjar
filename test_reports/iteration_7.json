@@ -1,0 +1,22 @@
+{
+  "summary": "Verified Jar rebuild fix at GOAL=100: jar is visually full with a 10x10 grid, no blank space, stratified colors, and no clipped poms. Partial-fill, completion, celebration and Place-on-Shelf regression flows all pass.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Jar.jsx uses hard-coded grid constants (PERROW=10, POM=28, JAR_W=288, JAR_H=340) tied directly to GOAL=100 in store.js. If GOAL is ever changed, Jar visuals will silently break. Consider deriving JAR_H/rows from GOAL/PERROW so the two stay in sync.",
+    "Row-Y layout is applied via framer-motion transforms (springy). This is fine, but tests need a settle-timeout. Consider prefers-reduced-motion support."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend-only)", "frontend": "100%"},
+  "seed_data_creation": "Seeded localStorage.pomjar_poms via page.evaluate for 100 (50m+30c+20j), 45 (25m+15c+5j), and 99 (50m+30c+19j) poms; cleared pomjar_today and pomjar_shelf between tests.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "At 1440x900, 100-pom jar: top gap 6px, bottom gap 9px; rows sizes [10]*10; category order top->bottom: joy(2) / consistency(3) / momentum(5). 45-pom partial fill stacks at bottom with 9px bottom gap, none clipped. 99+1 completion triggers pj-jar-glow, [data-testid=woodland-cheer], celebration-card with place-on-shelf-button/not-yet-button; Place on Shelf resets progress to '0 / 100 poms' and adds one [data-testid^=shelf-jar]. Today complete button testid pattern is `complete-task-{taskId}` (not `today-complete-*`).",
+  "rca of the issue": "Root cause was Jar sized for 400 poms (9 cols, taller body) leaving huge blank band at top for 100. Fix rebuilds jar as 10x10 grid (JAR_W=288, JAR_H=340, POM=28, STEP_X=28, STEP_Y=33) so 100 poms exactly fill the container. Verified: pile top within 6px of jar top; pile bottom within 9px of jar bottom; all 100 poms fully inside jar bounds."
+}
