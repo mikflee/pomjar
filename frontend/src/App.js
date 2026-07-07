@@ -92,8 +92,13 @@ function App() {
         <header className="text-center mb-10 md:mb-14">
           <h1
             data-testid="app-title"
-            className="font-serif-cozy text-6xl sm:text-7xl md:text-8xl font-medium tracking-tight text-white"
-            style={{ textShadow: "0 2px 30px rgba(217,119,6,0.45)" }}
+            className="font-serif-cozy text-6xl sm:text-7xl md:text-8xl text-white"
+            style={{
+              fontWeight: 600,
+              letterSpacing: "-0.01em",
+              fontVariationSettings: '"opsz" 144, "SOFT" 0, "WONK" 0',
+              textShadow: "0 2px 24px rgba(217,119,6,0.35)",
+            }}
           >
             Pom Jar
           </h1>
