@@ -1,0 +1,173 @@
+{
+  "project_name": "Pom Jar",
+  "theme_and_archetype": {
+    "theme": "dark",
+    "archetype": "1 (Organic & Earthy) - Custom Night Mode",
+    "reasoning": "The 'cabin in the woods' and 'lantern glow' requirements call for a moody, grounded, warm environment. It bridges Organic/Earthy aesthetics with a deep cinematic lighting approach (Luxury principles) to feel cozy, not clinical or childish."
+  },
+  "typography": {
+    "rules": [
+      "No generic sans-serifs for headings. Use the designated serif.",
+      "Headlines (Jar title, Drawer headers) must use tight tracking.",
+      "Subtitles and labels use wide tracking and uppercase."
+    ],
+    "fonts": {
+      "heading": "'Fraunces', serif",
+      "body": "'DM Sans', sans-serif"
+    },
+    "scale": {
+      "h1": "text-5xl sm:text-6xl font-medium tracking-tight",
+      "h2": "text-2xl sm:text-3xl font-medium",
+      "h3": "text-xl font-medium",
+      "body": "text-base leading-relaxed",
+      "label": "text-xs tracking-[0.15em] uppercase font-bold"
+    }
+  },
+  "colors": {
+    "environment": {
+      "wood_base": "#1A1412",
+      "overlay": "rgba(0,0,0,0.65)",
+      "lantern_glow": "radial-gradient(circle at 50% 40%, rgba(217, 119, 6, 0.15) 0%, transparent 60%)"
+    },
+    "surfaces": {
+      "parchment_base": "#FDFBF7",
+      "parchment_alt": "#F4EFE6",
+      "parchment_border": "#EAE3D5"
+    },
+    "text": {
+      "on_dark": "#FFFFFF",
+      "on_dark_muted": "rgba(255,255,255,0.7)",
+      "on_parchment": "#3F332D",
+      "on_parchment_muted": "#8A7E78"
+    },
+    "categories": {
+      "joy": {
+        "name": "Joy",
+        "hex": "#EAB308",
+        "gradient": "radial-gradient(circle at 30% 30%, #FDE047 0%, #EAB308 60%, #A16207 100%)"
+      },
+      "consistency": {
+        "name": "Consistency",
+        "hex": "#4D7C0F",
+        "gradient": "radial-gradient(circle at 30% 30%, #84CC16 0%, #4D7C0F 60%, #3F6212 100%)"
+      },
+      "momentum": {
+        "name": "Momentum",
+        "hex": "#BE123C",
+        "gradient": "radial-gradient(circle at 30% 30%, #FB7185 0%, #BE123C 60%, #881337 100%)"
+      }
+    }
+  },
+  "spacing_and_layout": {
+    "philosophy": "Generous spacing. The jar needs breathing room to feel like a hero object. Panels should feel structured and tactile.",
+    "bento_rules": {
+      "mobile": "Single column. Jar first, then Add Task, then Today list, then Drawer.",
+      "desktop": "Two-column grid (grid-cols-12 gap-12). Left column (col-span-5) is the environment holding the Jar, Progress, and Reward field. Right column (col-span-7) holds the Parchment panels for Add Task, Today List, and Task Drawer."
+    },
+    "container_padding": "p-6 md:p-8"
+  },
+  "components": {
+    "jar": {
+      "architecture": "Must be pure CSS or SVG + Glassmorphism. Do not use an image.",
+      "styles": [
+        "Shape: A main rectangular body with rounded bottom corners (rounded-b-3xl), topped with a narrower 'neck' (rounded-t-sm).",
+        "Glassmorphism: backdrop-blur-md, bg-white/5.",
+        "Borders: 2px solid rgba(255,255,255,0.2) on the left/top, 1px solid rgba(255,255,255,0.05) on right/bottom to simulate light reflection.",
+        "Shadow: Inner shadow (box-shadow: inset 20px 0 40px rgba(0,0,0,0.2), inset -10px 0 20px rgba(255,255,255,0.1)) to give glass volume.",
+        "Highlight: A pure white vertical gradient sliver (w-1 or w-2) running down the left side at 10% opacity."
+      ],
+      "internal_layout": "flex flex-col-reverse items-center justify-start overflow-hidden. Use gap-1 and p-2."
+    },
+    "poms": {
+      "styles": [
+        "Shape: Perfect circle (rounded-full).",
+        "Texture: Use the category radial gradients to make them look spherical/3D.",
+        "Shadow: drop-shadow-md to give depth against other poms.",
+        "Size: w-4 h-4 or w-5 h-5 (fluid based on jar capacity). Since it needs to hold 400, they must pack densely. Flex wrap with gap-0.5 is ideal."
+      ],
+      "stratification_logic": "Group poms by category color. Sort groups by size (largest group at the bottom). When rendering, map them inside a flex container with flex-wrap-reverse or flex-col-reverse."
+    },
+    "panels": {
+      "styles": [
+        "Background: bg-[#FDFBF7].",
+        "Border: 1px solid #EAE3D5.",
+        "Radius: rounded-2xl.",
+        "Shadow: shadow-xl (dark ambient shadow from the environment).",
+        "Typography: Dark brown/grey text for high contrast."
+      ]
+    },
+    "task_row": {
+      "styles": [
+        "Layout: Flex row, items-center, gap-4.",
+        "Border: bottom border border-[#EAE3D5] on all but last item.",
+        "Padding: py-3.",
+        "Interactivity: hover:bg-[#F4EFE6] transition-colors rounded-lg px-2 -mx-2."
+      ]
+    },
+    "buttons": {
+      "primary": "bg-black text-white hover:bg-[#3F332D] rounded-lg px-4 py-2 font-medium transition-all active:scale-95",
+      "icon": "text-[#8A7E78] hover:text-[#3F332D] p-1.5 transition-colors rounded-md hover:bg-[#EAE3D5]"
+    },
+    "inputs": {
+      "styles": "bg-transparent border-b-2 border-[#EAE3D5] focus:border-[#3F332D] outline-none py-2 text-lg text-[#3F332D] placeholder:text-[#8A7E78] transition-colors"
+    },
+    "reward_field": {
+      "styles": "text-center bg-transparent border-b border-white/20 text-white/90 text-2xl font-serif py-2 w-full max-w-xs focus:border-white/50 outline-none placeholder:text-white/30"
+    }
+  },
+  "motion_and_interactions": {
+    "pom_drop": {
+      "trigger": "Completing a task.",
+      "animation": "Framer Motion. Pom spawns at top of the Jar (y: -50, opacity: 0), falls to its designated flex position (layout animation), and has a slight spring bounce (type: 'spring', stiffness: 200, damping: 15).",
+      "constraint": "The JAR itself must NOT bounce or shake. Only the Pom moves."
+    },
+    "task_complete": {
+      "animation": "Task row strikes through, fades out (opacity: 0, x: 20), then shrinks height to 0."
+    },
+    "drawer_toggle": {
+      "animation": "Framer Motion AnimatePresence. Height scales from 0 to auto, opacity 0 to 1. Feels like sliding open."
+    },
+    "jar_celebration": {
+      "trigger": "Jar reaches 400 poms.",
+      "animation": "Jar gets a strong drop-shadow glow (box-shadow: 0 0 40px rgba(217, 119, 6, 0.6)). A celebratory 'Parchment Card' modal scales in (scale: 0.9 to 1) with Confetti or a subtle CSS particle effect."
+    }
+  },
+  "data_and_state": {
+    "architecture": "React Context or Zustand for state management. Persist to localStorage.",
+    "schema": [
+      "tasks: { id, title, category ('joy' | 'consistency' | 'momentum'), destination ('today' | 'drawer') }",
+      "poms: array of completed task objects or just category strings, max length 400.",
+      "reward: string.",
+      "shelved_jars: number"
+    ]
+  },
+  "image_urls": {
+    "wood_background": {
+      "url": "https://images.unsplash.com/photo-1576092762791-dd9e2220abd1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHwzfHxkYXJrJTIwd29vZCUyMGdyYWluJTIwdGV4dHVyZXxlbnwwfHx8fDE3ODM0NDc3MTB8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Dark wood grain texture. Use as a fixed, cover background image.",
+      "category": "environment"
+    }
+  },
+  "icons": {
+    "library": "lucide-react",
+    "mapping": {
+      "edit": "Pencil",
+      "save_to_drawer": "ArchiveDown",
+      "add_to_today": "ArrowUpCircle",
+      "delete": "Trash2",
+      "complete": "CheckCircle2",
+      "drawer_open": "ChevronDown",
+      "drawer_closed": "ChevronRight"
+    }
+  },
+  "instructions_to_main_agent": [
+    "Install specific fonts: @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap');",
+    "Use framer-motion for the Pom drop and layout animations.",
+    "Ensure 'lucide-react' is installed.",
+    "Implement the background by layering the wood image, a black overlay, and the radial lantern glow.",
+    "Build the Jar using HTML divs and CSS Glassmorphism strictly following the provided borders and inner shadow.",
+    "The 400 Poms should be mapped inside the Jar. Calculate their counts, group them by category size (largest count first), and render them in a dense flex-wrap container.",
+    "Do NOT bounce the entire Jar. Only animate the incoming poms.",
+    "Implement the Data/State purely with local storage. No backend required."
+  ]
+}
