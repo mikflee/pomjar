@@ -25,7 +25,12 @@ A cozy cabin-in-the-woods task motivation web app. Completing a task adds one po
 - 400 → glow + celebration card + reset + shelf.
 
 ## Implemented (2026-06)
-- Full MVP complete and tested. Testing agent: 14/14 frontend scenarios passed, 100%.
+- Full MVP complete and tested. Testing agent iteration_1: 14/14 passed.
+- Layout: jar + Today side by side, Task Drawer full-width underneath (md breakpoint). iteration_2 passed.
+- Title font switched Fraunces -> Bitter (Fraunces "wonk" axis looked drunk).
+- Pom packing FIX: poms bottom-anchored via flex wrap + align-content/items flex-end; stratified least-on-top / greatest-on-bottom. Verified iteration_3.
+- Woodland Cheer: ~18% chance on task completion, single animal crosses full screen holding waving cheerleader pom-poms (no text/sound). At 400: multi-animal parade.
+- Meaningful jar-fill flow: 400 poms -> glow + parade, then reward card with "Place on Shelf" / "Not yet" agency (no auto-empty). Shelf stores dated jars (month-year + reward + unique color stratification snapshot). iteration_3: 8/8 passed.
 
 ## Backlog
 - P2: guard rapid completion within the 400 celebration window with a ref.
