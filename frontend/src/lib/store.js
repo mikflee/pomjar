@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export const GOAL = 400;
+export const GOAL = 100;
 
 export const CATEGORIES = {
   joy: {
@@ -47,7 +47,7 @@ export const DEFAULT_DRAWER = [
   ]),
 ];
 
-export const ANIMALS = ["🐻", "🦊", "🦦", "🐰", "🐸", "🐿️", "🦉", "🦌"];
+export const ANIMALS = ["🦊", "🐇", "🦌", "🐿️", "🐈", "🐺", "🦔", "🐕"];
 
 export const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 

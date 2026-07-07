@@ -22,7 +22,7 @@ function App() {
   const [reward, setReward] = useLocalStorage("pomjar_reward", "");
   const [shelf, setShelf] = useLocalStorage("pomjar_shelf", []);
 
-  const [lastPomId, setLastPomId] = useState(null);
+  const [landingPomId, setLandingPomId] = useState(null);
   const [celebration, setCelebration] = useState(null);
   const [jarFull, setJarFull] = useState(false);
   const [cheer, setCheer] = useState(null);
@@ -62,8 +62,13 @@ function App() {
     setTasks((t) => t.filter((x) => x.id !== task.id));
     if (poms.length >= GOAL) return; // jar is full, awaiting shelving
     const pomId = uid();
-    setLastPomId(pomId);
     setPoms((p) => [...p, { id: pomId, category: task.category }]);
+    // Land on top of the pile first, then settle into the correct stratum.
+    setLandingPomId(pomId);
+    setTimeout(
+      () => setLandingPomId((cur) => (cur === pomId ? null : cur)),
+      1150,
+    );
     if (Math.random() < 0.18) setCheer({ id: uid(), mode: "single" });
   };
 
@@ -104,7 +109,7 @@ function App() {
     ]);
     setPoms([]);
     setReward("");
-    setLastPomId(null);
+    setLandingPomId(null);
     setJarFull(false);
     setCelebration(null);
   };
@@ -131,7 +136,7 @@ function App() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 lg:gap-14 items-start">
           {/* Jar side */}
           <section className="md:col-span-5 flex flex-col items-center">
-            <Jar poms={poms} lastPomId={lastPomId} glow={jarFull} />
+            <Jar poms={poms} landingPomId={landingPomId} glow={jarFull} />
 
             {jarFull && !celebration && (
               <button

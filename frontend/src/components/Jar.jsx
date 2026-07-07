@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import { CATEGORIES, CATEGORY_ORDER, GOAL } from "../lib/store";
 
-const POM = 12;
+const POM = 26;
 
-export const Jar = ({ poms, lastPomId, glow }) => {
+export const Jar = ({ poms, landingPomId, glow }) => {
   const counts = {};
   CATEGORY_ORDER.forEach((c) => (counts[c] = 0));
   poms.forEach((p) => (counts[p.category] += 1));
@@ -19,6 +19,16 @@ export const Jar = ({ poms, lastPomId, glow }) => {
   layerOrder.forEach((cat) =>
     poms.filter((p) => p.category === cat).forEach((p) => ordered.push(p)),
   );
+
+  // During its landing phase, the newest pom sits on TOP of the pile (first
+  // slot). Clearing landingPomId lets it settle down into its stratum.
+  if (landingPomId) {
+    const idx = ordered.findIndex((p) => p.id === landingPomId);
+    if (idx > -1) {
+      const [lp] = ordered.splice(idx, 1);
+      ordered.unshift(lp);
+    }
+  }
 
   return (
     <div className="flex flex-col items-center" data-testid="jar-wrapper">
@@ -63,16 +73,21 @@ export const Jar = ({ poms, lastPomId, glow }) => {
           }}
         >
           {ordered.map((p) => {
-            const isNew = p.id === lastPomId;
+            const isLanding = p.id === landingPomId;
             return (
               <motion.span
                 key={p.id}
-                initial={isNew ? { y: -320, opacity: 0 } : false}
+                layout
+                initial={isLanding ? { y: -360, opacity: 0 } : false}
                 animate={{ y: 0, opacity: 1 }}
                 transition={
-                  isNew
-                    ? { type: "spring", stiffness: 140, damping: 13, mass: 0.9 }
-                    : { duration: 0 }
+                  isLanding
+                    ? {
+                        y: { type: "tween", duration: 1.05, ease: "easeIn" },
+                        opacity: { duration: 0.25 },
+                        layout: { type: "spring", stiffness: 140, damping: 20 },
+                      }
+                    : { layout: { type: "spring", stiffness: 160, damping: 22 } }
                 }
                 className="rounded-full"
                 style={{
@@ -80,7 +95,7 @@ export const Jar = ({ poms, lastPomId, glow }) => {
                   height: POM,
                   background: CATEGORIES[p.category].gradient,
                   boxShadow:
-                    "0 1px 2px rgba(0,0,0,0.4), inset 0 1px 1.5px rgba(255,255,255,0.45)",
+                    "0 2px 4px rgba(0,0,0,0.4), inset 0 2px 3px rgba(255,255,255,0.45), inset 0 -3px 5px rgba(0,0,0,0.25)",
                 }}
               />
             );
