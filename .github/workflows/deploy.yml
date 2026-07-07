@@ -27,15 +27,21 @@ jobs:
 
       - run: npm install --legacy-peer-deps
 
+      - run: npm install ajv@8 ajv-keywords@5 --legacy-peer-deps
+
       - run: npm run build
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: frontend/dist
+          path: frontend/build
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
+
+    permissions:
+      pages: write
+      id-token: write
 
     environment:
       name: github-pages
