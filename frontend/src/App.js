@@ -101,7 +101,7 @@ function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
           {/* Jar side */}
-          <section className="lg:col-span-5 flex flex-col items-center lg:sticky lg:top-10">
+          <section className="lg:col-span-5 flex flex-col items-center">
             <Jar poms={poms} lastPomId={lastPomId} glow={glow} />
             <div className="mt-8 w-full max-w-xs">
               <label className="pj-label text-white/50 block text-center mb-2">
@@ -140,12 +140,15 @@ function App() {
               />
             </div>
 
-            <TaskDrawer
-              drawer={drawer}
-              onAddToToday={addToToday}
-              onDelete={deleteDrawer}
-            />
           </section>
+        </div>
+
+        <div className="mt-8 md:mt-10">
+          <TaskDrawer
+            drawer={drawer}
+            onAddToToday={addToToday}
+            onDelete={deleteDrawer}
+          />
         </div>
       </div>
 
